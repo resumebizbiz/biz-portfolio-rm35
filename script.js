@@ -143,42 +143,6 @@ document.querySelectorAll('.trophy-expand').forEach(btn => {
   });
 });
 
-// ---- PROJECT DETAIL PANELS (bento cards) ----
-const bentoCards = document.querySelectorAll('.bento-card');
-const projectDetails = document.querySelectorAll('.project-detail');
-
-function closeAllProjectDetails() {
-  projectDetails.forEach(d => d.classList.remove('is-open'));
-}
-
-bentoCards.forEach(card => {
-  card.addEventListener('click', () => {
-    const detailId = card.dataset.detail;
-    const detail = document.getElementById(detailId);
-    if (detail) {
-      closeAllProjectDetails();
-      detail.classList.add('is-open');
-    }
-  });
-});
-
-projectDetails.forEach(detail => {
-  // Close when clicking the dimmed background (but not the card content itself)
-  detail.addEventListener('click', (e) => {
-    if (e.target === detail) closeAllProjectDetails();
-  });
-  // Close when clicking the explicit close button
-  const closeBtn = detail.querySelector('.detail-close');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeAllProjectDetails);
-  }
-});
-
-// Close an open project detail with the Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeAllProjectDetails();
-});
-
 // ---- SCROLL REVEAL (progressive enhancement) ----
 // Content is visible by default (see CSS). Adding 'js-ready' to <body>
 // switches panels to fade-in mode once JS is confirmed running.
