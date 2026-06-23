@@ -126,6 +126,48 @@ window.addEventListener('popstate', () => {
   showPanel(getPanelIdFromHash(), false);
 });
 
+// ---- PROJECT DETAIL OVERLAY ----
+// Opens/closes via class toggling only — deliberately NOT using the URL hash,
+// since this site's tab navigation already uses the hash for routing between
+// panels, and reusing it here caused the overlay to fight with tab-switching.
+const projectOverlay = document.getElementById('projectOverlay');
+const projectOverlayClose = document.getElementById('projectOverlayClose');
+const bentoCards = document.querySelectorAll('.bento-card');
+const projectDetailCards = document.querySelectorAll('[data-project-detail]');
+
+function openProjectDetail(projectId) {
+  projectDetailCards.forEach(card => {
+    card.classList.toggle('is-active', card.id === projectId);
+  });
+  projectOverlay.classList.add('is-open');
+}
+
+function closeProjectDetail() {
+  projectOverlay.classList.remove('is-open');
+}
+
+bentoCards.forEach(card => {
+  card.addEventListener('click', () => {
+    openProjectDetail(card.dataset.project);
+  });
+});
+
+if (projectOverlayClose) {
+  projectOverlayClose.addEventListener('click', closeProjectDetail);
+}
+
+// Close when clicking the dimmed background itself (not the card inside it)
+if (projectOverlay) {
+  projectOverlay.addEventListener('click', (e) => {
+    if (e.target === projectOverlay) closeProjectDetail();
+  });
+}
+
+// Close with the Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeProjectDetail();
+});
+
 // ---- TROPHY SHELF (Achievements) PHOTO TOGGLE ----
 // Photo strips start collapsed; clicking the camera icon on a trophy row
 // reveals that entry's photos without taking up space for everyone else.
