@@ -126,6 +126,50 @@ window.addEventListener('popstate', () => {
   showPanel(getPanelIdFromHash(), false);
 });
 
+// ---- SHARED IMAGE OVERLAY (certs, work/achievement/leadership photos) ----
+// Same JS-controlled approach as the project overlay — no URL hash involved,
+// so clicking any photo never interferes with tab navigation.
+const imageOverlay = document.getElementById('imageOverlay');
+const imageOverlayImg = document.getElementById('imageOverlayImg');
+const imageOverlayClose = document.getElementById('imageOverlayClose');
+const imgTriggers = document.querySelectorAll('.img-trigger');
+
+function openImageOverlay(src, alt) {
+  imageOverlayImg.setAttribute('src', src);
+  imageOverlayImg.setAttribute('alt', alt || '');
+  imageOverlay.classList.add('is-open');
+}
+
+function closeImageOverlay() {
+  imageOverlay.classList.remove('is-open');
+}
+
+imgTriggers.forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const src = trigger.dataset.img;
+    const innerImg = trigger.querySelector('img');
+    const alt = innerImg ? innerImg.getAttribute('alt') : '';
+    openImageOverlay(src, alt);
+  });
+});
+
+if (imageOverlayClose) {
+  imageOverlayClose.addEventListener('click', closeImageOverlay);
+}
+
+if (imageOverlay) {
+  imageOverlay.addEventListener('click', (e) => {
+    if (e.target === imageOverlay) closeImageOverlay();
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeImageOverlay();
+    closeProjectDetail();
+  }
+});
+
 // ---- PROJECT DETAIL OVERLAY ----
 // Opens/closes via class toggling only — deliberately NOT using the URL hash,
 // since this site's tab navigation already uses the hash for routing between
@@ -162,11 +206,6 @@ if (projectOverlay) {
     if (e.target === projectOverlay) closeProjectDetail();
   });
 }
-
-// Close with the Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeProjectDetail();
-});
 
 // ---- TROPHY SHELF (Achievements) PHOTO TOGGLE ----
 // Photo strips start collapsed; clicking the camera icon on a trophy row
